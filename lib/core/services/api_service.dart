@@ -30,6 +30,13 @@ class ApiService {
     };
   }
 
+  Map<String, String> get _authHeadersForSignUp {
+   
+    return {
+      'Content-Type': 'application/json',
+    };
+  }
+
   
   Map<String, dynamic> _parseWrapper(http.Response response) {
   if (response.statusCode == 401) {
@@ -200,7 +207,7 @@ Future<String> fetchRawPaths(String figmaUrl, int version) async {
     final url = Uri.parse('$_baseUrl/api/add/user');
     final response = await http.post(
       url,
-      headers: _authHeaders,
+      headers: _authHeadersForSignUp,
       body: jsonEncode({
         'username': username,
         'password': password,
