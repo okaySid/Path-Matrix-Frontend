@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/app_state.dart';
 import '../../../shared/widgets/shared_widgets.dart';
-import '../../../core/Services/api_exception.dart';
+import '../../../core/services/api_exception.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — shows the settings menu dialog
