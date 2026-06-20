@@ -78,21 +78,7 @@ class _EmptyWorkspace extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // OutlinedButton.icon(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.play_circle_outline, size: 18),
-                //   label: const Text('Watch Demo'),
-                //   style: OutlinedButton.styleFrom(
-                //     padding: const EdgeInsets.symmetric(
-                //         horizontal: 20, vertical: 12),
-                //     side: const BorderSide(color: AppTheme.border),
-                //     shape: RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.circular(8),
-                //     ),
-                //     textStyle: const TextStyle(
-                //         fontSize: 14, fontWeight: FontWeight.w500),
-                //   ),
-                // ),
+             
               ],
             ),
             const SizedBox(height: 48),

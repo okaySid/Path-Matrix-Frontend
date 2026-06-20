@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/api_exception.dart';
 import '../../../shared/models/app_state.dart';
 import '../../../shared/widgets/shared_widgets.dart';
 
@@ -39,45 +40,14 @@ class _NewAnalysisModalState extends State<NewAnalysisModal> {
 
       if (mounted) {
         Navigator.of(context).pop();
-        // Green snackbar with Spring Boot's success message
         ScaffoldMessenger.of(context).showSnackBar(greenSnackbar(message));
-          // SnackBar(
-          //   content: Row(
-          //     children: [
-          //       const Icon(Icons.check_circle_outline,
-          //           color: Colors.white, size: 16),
-          //       const SizedBox(width: 8),
-          //       Expanded(child: Text(message)),
-          //     ],
-          //   ),
-          //   backgroundColor: AppTheme.success,
-          //   behavior: SnackBarBehavior.floating,
-          //   width: 360,
-          //   duration: const Duration(seconds: 6),
-          // ),
-        
       }
     } catch (e) {
-      // Red snackbar with Spring Boot's error message
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(redSnackbar(e.toString().replaceAll('Exception: ', '')));
-          // SnackBar(
-          //   content: Row(
-          //     children: [
-          //       const Icon(Icons.error_outline,
-          //           color: Colors.white, size: 16),
-          //       const SizedBox(width: 8),
-          //       Expanded(
-          //         child: Text(e.toString().replaceAll('Exception: ', '')),
-          //       ),
-          //     ],
-          //   ),
-          //   backgroundColor: Colors.red.shade700,
-          //   behavior: SnackBarBehavior.floating,
-          //   width: 360,
-          //   duration: const Duration(seconds: 6),
-          // ),
-        // );
+        final msg = e is ApiException
+            ? e.message
+            : e.toString().replaceAll('Exception: ', '');
+        ScaffoldMessenger.of(context).showSnackBar(redSnackbar(msg));
       }
     } finally {
       if (mounted) setState(() => _isGenerating = false);
@@ -228,7 +198,8 @@ class _ModalHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 40, height: 40,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             color: AppTheme.primaryLight.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),

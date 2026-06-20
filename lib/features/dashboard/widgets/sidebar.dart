@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/services/api_exception.dart';
 import '../../../shared/models/app_state.dart';
 import '../../../shared/models/analysis_models.dart';
+import '../../../shared/widgets/shared_widgets.dart';
 import 'new_analysis_modal.dart';
 
 class DashboardSidebar extends StatefulWidget {
@@ -25,10 +27,11 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
   List<AnalysisProject> _filteredProjects(List<AnalysisProject> projects) {
     if (_searchQuery.trim().isEmpty) return projects;
     final q = _searchQuery.trim().toLowerCase();
-    return projects.where((p) =>
-        p.name.toLowerCase().contains(q) ||
-        'v${p.versionNumber}'.contains(q),
-    ).toList();
+    return projects
+        .where((p) =>
+            p.name.toLowerCase().contains(q) ||
+            'v${p.versionNumber}'.contains(q))
+        .toList();
   }
 
   @override
@@ -44,7 +47,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
           _SidebarHeader(isCollapsed: isCollapsed),
           _NewAnalysisButton(isCollapsed: isCollapsed),
 
-          // ── Search bar — hidden when collapsed ──────
+          // Search bar — hidden when collapsed
           if (!isCollapsed) ...[
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
@@ -60,13 +63,12 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
             child: Divider(color: Color(0xFF1E293B), height: 1),
           ),
 
-          // ── Toggle — hidden when collapsed ──────────
+          // Toggle — hidden when collapsed
           if (!isCollapsed)
             _ProjectListToggle(
               showingUserProjects: appState.showingUserProjects,
               onUserTap: () {
                 context.read<AppState>().switchToUserProjects();
-                // Clear search when switching tabs
                 setState(() {
                   _searchQuery = '';
                   _searchController.clear();
@@ -83,7 +85,7 @@ class _DashboardSidebarState extends State<DashboardSidebar> {
 
           if (isCollapsed) const SizedBox(height: 8),
 
-          // ── Project list ─────────────────────────────
+          // Project list
           Expanded(
             child: filtered.isEmpty
                 ? _EmptySidebarState(
@@ -134,21 +136,12 @@ class _SidebarSearchBar extends StatelessWidget {
       child: TextField(
         controller: controller,
         onChanged: onChanged,
-        style: const TextStyle(
-          fontSize: 12,
-          color: AppTheme.sidebarText,
-        ),
+        style: const TextStyle(fontSize: 12, color: AppTheme.sidebarText),
         decoration: InputDecoration(
           hintText: 'Search projects...',
-          hintStyle: const TextStyle(
-            fontSize: 12,
-            color: Color(0xFF475569),
-          ),
-          prefixIcon: const Icon(
-            Icons.search,
-            size: 15,
-            color: Color(0xFF475569),
-          ),
+          hintStyle: const TextStyle(fontSize: 12, color: Color(0xFF475569)),
+          prefixIcon:
+              const Icon(Icons.search, size: 15, color: Color(0xFF475569)),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(
                   icon: const Icon(Icons.close,
@@ -319,10 +312,7 @@ class _SidebarHeader extends StatelessWidget {
                   ),
                   Text(
                     'Figma Analysis Tool',
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Color(0xFF64748B),
-                    ),
+                    style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                   ),
                 ],
               ),
@@ -365,7 +355,8 @@ class _NewAnalysisButton extends StatelessWidget {
                     color: AppTheme.primary,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Icon(Icons.add, color: Colors.white, size: 20),
+                  child:
+                      const Icon(Icons.add, color: Colors.white, size: 20),
                 ),
               ),
             )
@@ -381,8 +372,7 @@ class _NewAnalysisButton extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
+                      borderRadius: BorderRadius.circular(8)),
                   textStyle: const TextStyle(
                       fontSize: 13, fontWeight: FontWeight.w600),
                 ),
@@ -474,9 +464,7 @@ class _ProjectItem extends StatelessWidget {
               width: 8,
               height: 8,
               decoration: BoxDecoration(
-                color: _statusColor,
-                shape: BoxShape.circle,
-              ),
+                  color: _statusColor, shape: BoxShape.circle),
             ),
           ),
         ),
@@ -491,7 +479,8 @@ class _ProjectItem extends StatelessWidget {
         onTap: () => context.read<AppState>().loadAnalysis(project.id),
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
           decoration: BoxDecoration(
             color: isSelected ? AppTheme.sidebarActive : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
@@ -507,15 +496,12 @@ class _ProjectItem extends StatelessWidget {
                 height: 8,
                 margin: const EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
-                  color: _statusColor,
-                  shape: BoxShape.circle,
-                ),
+                    color: _statusColor, shape: BoxShape.circle),
               ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Highlight matching text in project name
                     _HighlightedText(
                       text: project.name,
                       query: searchQuery,
@@ -536,9 +522,7 @@ class _ProjectItem extends StatelessWidget {
                         Text(
                           _formatTime(project.lastUpdated),
                           style: const TextStyle(
-                            fontSize: 11,
-                            color: Color(0xFF64748B),
-                          ),
+                              fontSize: 11, color: Color(0xFF64748B)),
                         ),
                         const SizedBox(width: 6),
                         Container(
@@ -568,11 +552,8 @@ class _ProjectItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: const Padding(
                     padding: EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.delete_outline,
-                      size: 14,
-                      color: Color(0xFF475569),
-                    ),
+                    child: Icon(Icons.delete_outline,
+                        size: 14, color: Color(0xFF475569)),
                   ),
                 ),
             ],
@@ -592,7 +573,7 @@ class _ProjectItem extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Highlighted Text — bolds the matching search substring
+// Highlighted Text
 // ─────────────────────────────────────────────────────────────────────────────
 class _HighlightedText extends StatelessWidget {
   final String text;
@@ -607,54 +588,35 @@ class _HighlightedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseStyle = TextStyle(
+      fontSize: 13,
+      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+      color: isSelected ? Colors.white : AppTheme.sidebarText,
+    );
+
     if (query.isEmpty) {
-      return Text(
-        text,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: isSelected ? Colors.white : AppTheme.sidebarText,
-        ),
-      );
+      return Text(text,
+          maxLines: 1, overflow: TextOverflow.ellipsis, style: baseStyle);
     }
 
     final lowerText = text.toLowerCase();
     final lowerQuery = query.toLowerCase();
     final matchStart = lowerText.indexOf(lowerQuery);
 
-    // No match — render plain
     if (matchStart == -1) {
-      return Text(
-        text,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: isSelected ? Colors.white : AppTheme.sidebarText,
-        ),
-      );
+      return Text(text,
+          maxLines: 1, overflow: TextOverflow.ellipsis, style: baseStyle);
     }
 
     final matchEnd = matchStart + query.length;
-    final baseColor = isSelected ? Colors.white : AppTheme.sidebarText;
 
     return RichText(
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       text: TextSpan(
-        style: TextStyle(
-          fontSize: 13,
-          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-          color: baseColor,
-        ),
+        style: baseStyle,
         children: [
-          // Before match
-          if (matchStart > 0)
-            TextSpan(text: text.substring(0, matchStart)),
-          // Matched portion — highlighted in amber
+          if (matchStart > 0) TextSpan(text: text.substring(0, matchStart)),
           TextSpan(
             text: text.substring(matchStart, matchEnd),
             style: TextStyle(
@@ -663,9 +625,7 @@ class _HighlightedText extends StatelessWidget {
               backgroundColor: const Color(0xFFF59E0B).withOpacity(0.15),
             ),
           ),
-          // After match
-          if (matchEnd < text.length)
-            TextSpan(text: text.substring(matchEnd)),
+          if (matchEnd < text.length) TextSpan(text: text.substring(matchEnd)),
         ],
       ),
     );
@@ -673,7 +633,7 @@ class _HighlightedText extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Empty state — handles both no projects and no search results
+// Empty state
 // ─────────────────────────────────────────────────────────────────────────────
 class _EmptySidebarState extends StatelessWidget {
   final bool isCollapsed;
@@ -702,10 +662,9 @@ class _EmptySidebarState extends StatelessWidget {
               'No projects found',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF64748B),
-              ),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF64748B)),
             ),
             const SizedBox(height: 4),
             GestureDetector(
@@ -713,10 +672,9 @@ class _EmptySidebarState extends StatelessWidget {
               child: const Text(
                 'Clear search',
                 style: TextStyle(
-                  fontSize: 11,
-                  color: AppTheme.primaryLight,
-                  fontWeight: FontWeight.w500,
-                ),
+                    fontSize: 11,
+                    color: AppTheme.primaryLight,
+                    fontWeight: FontWeight.w500),
               ),
             ),
           ],
@@ -730,10 +688,7 @@ class _EmptySidebarState extends StatelessWidget {
         'No projects found.',
         textAlign: TextAlign.center,
         style: TextStyle(
-          fontSize: 12,
-          color: Color(0xFF475569),
-          height: 1.5,
-        ),
+            fontSize: 12, color: Color(0xFF475569), height: 1.5),
       ),
     );
   }
@@ -782,19 +737,15 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Delete Project',
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: AppTheme.textPrimary,
-                        ),
-                      ),
-                      Text(
-                        'This action cannot be undone',
-                        style: TextStyle(
-                            fontSize: 12, color: AppTheme.textSecondary),
-                      ),
+                      Text('Delete Project',
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                              color: AppTheme.textPrimary)),
+                      Text('This action cannot be undone',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.textSecondary)),
                     ],
                   ),
                 ),
@@ -826,19 +777,17 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.project.name,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: AppTheme.textPrimary,
-                          ),
-                        ),
+                        Text(widget.project.name,
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textPrimary)),
                         const SizedBox(height: 2),
                         Text(
                           'Version ${widget.project.versionNumber}  •  ${_formatDate(widget.project.lastUpdated)}',
                           style: const TextStyle(
-                              fontSize: 12, color: AppTheme.textSecondary),
+                              fontSize: 12,
+                              color: AppTheme.textSecondary),
                         ),
                       ],
                     ),
@@ -855,10 +804,9 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
                     child: Text(
                       'v${widget.project.versionNumber}',
                       style: const TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w700,
-                        color: AppTheme.error,
-                      ),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppTheme.error),
                     ),
                   ),
                 ],
@@ -871,8 +819,8 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
               decoration: BoxDecoration(
                 color: const Color(0xFFFFF8E7),
                 borderRadius: BorderRadius.circular(8),
-                border:
-                    Border.all(color: AppTheme.warning.withOpacity(0.4)),
+                border: Border.all(
+                    color: AppTheme.warning.withOpacity(0.4)),
               ),
               child: Row(
                 children: [
@@ -946,52 +894,26 @@ class _DeleteConfirmDialogState extends State<_DeleteConfirmDialog> {
   Future<void> _handleDelete() async {
     setState(() => _isDeleting = true);
     try {
-      final message = await context.read<AppState>().deleteProject(widget.project.id);
+      final message = await context
+          .read<AppState>()
+          .deleteProject(widget.project.id);
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.check_circle_outline,
-                    color: Colors.white, size: 16),
-                const SizedBox(width: 8),
-                Expanded(child: Text(message)),
-              ],
-            ),
-            backgroundColor: AppTheme.success,
-            behavior: SnackBarBehavior.floating,
-            width: 400,
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        ScaffoldMessenger.of(context)
+            .showSnackBar(greenSnackbar(message));
       }
     } catch (e) {
       if (mounted) {
         setState(() => _isDeleting = false);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline, color: Colors.white, size: 16),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(e.toString().replaceAll('Exception: ', '')),
-                ),
-              ],
-            ),
-            backgroundColor: AppTheme.error,
-            behavior: SnackBarBehavior.floating,
-            width: 400,
-            duration: const Duration(seconds: 4),
-          ),
-        );
+        final msg = e is ApiException
+            ? e.message
+            : e.toString().replaceAll('Exception: ', '');
+        ScaffoldMessenger.of(context).showSnackBar(redSnackbar(msg));
       }
     }
   }
 
-  String _formatDate(DateTime dt) =>
-      '${dt.day}/${dt.month}/${dt.year}';
+  String _formatDate(DateTime dt) => '${dt.day}/${dt.month}/${dt.year}';
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1053,10 +975,9 @@ class _SidebarFooter extends StatelessWidget {
                   child: Text(
                     'Logged In',
                     style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
                   ),
                 ),
                 IconButton(

@@ -41,3 +41,17 @@ app.*.map.json
 # Generated files
 *.g.dart
 *.freezed.dart
+
+
+# Flutter
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# IDE
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
