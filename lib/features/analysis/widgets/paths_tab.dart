@@ -343,34 +343,7 @@ class _PathCard extends StatelessWidget {
   return chips;
 }
 
-  // List<Widget> _buildChips() {
-  //   final chips = <Widget>[];
-  //   for (int i = 0; i < path.nodes.length; i++) {
-  //     final nodeName = path.nodes[i];
-  //     final isActiveNode = highlightedNode == nodeName;
-
-  //     chips.add(
-  //       _NodeChip(
-  //         label: nodeName,
-  //         isActive: isActiveNode,
-  //         onTap: () => onNodeTap(nodeName),
-  //       ),
-  //     );
-
-  //     if (i < path.nodes.length - 1) {
-  //       chips.add(
-  //         Icon(
-  //           Icons.arrow_forward,
-  //           size: 12,
-  //           color: isActiveNode
-  //               ? const Color(0xFFF59E0B)
-  //               : AppTheme.textTertiary,
-  //         ),
-  //       );
-  //     }
-  //   }
-  //   return chips;
-  // }
+  
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

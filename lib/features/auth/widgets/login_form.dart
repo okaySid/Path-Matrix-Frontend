@@ -14,8 +14,8 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController(text: 'sid');
-  final _passwordController = TextEditingController(text: 's123');
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
   bool _isSigningUp = false;
@@ -156,6 +156,7 @@ class _LoginFormState extends State<LoginForm> {
                     size: 18, color: AppTheme.textTertiary),
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Username is required';
+                  if (v.trim().length < 4) return 'Username must be at least 4 characters';
                   return null;
                 },
               ),
@@ -180,51 +181,12 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'Password is required';
+                  if (v.trim().length < 4) return 'Password must be at least 4 characters';
                   return null;
                 },
               ),
               const SizedBox(height: 16),
-              Row(
-                // children: [
-                //   SizedBox(
-                //     width: 18,
-                //     height: 18,
-                //     child: Checkbox(
-                //       value: _rememberMe,
-                //       onChanged: (v) =>
-                //           setState(() => _rememberMe = v ?? false),
-                //       materialTapTargetSize:
-                //           MaterialTapTargetSize.shrinkWrap,
-                //       activeColor: AppTheme.primary,
-                //       shape: RoundedRectangleBorder(
-                //           borderRadius: BorderRadius.circular(4)),
-                //     ),
-                //   ),
-                //   const SizedBox(width: 8),
-                //   const Text(
-                //     'Remember me',
-                //     style: TextStyle(
-                //         fontSize: 13, color: AppTheme.textSecondary),
-                //   ),
-                //   const Spacer(),
-                //   TextButton(
-                //     onPressed: () {},
-                //     style: TextButton.styleFrom(
-                //       padding: EdgeInsets.zero,
-                //       minimumSize: Size.zero,
-                //       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                //     ),
-                //     child: const Text(
-                //       'Forgot password?',
-                //       style: TextStyle(
-                //         fontSize: 13,
-                //         fontWeight: FontWeight.w500,
-                //         color: AppTheme.primaryLight,
-                //       ),
-                //     ),
-                //   ),
-                // ],
-              ),
+              Row(),
               const SizedBox(height: 24),
               // Sign In button
               AppButton(
@@ -279,29 +241,7 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Container(
-              //   padding: const EdgeInsets.all(12),
-              //   decoration: BoxDecoration(
-              //     color: AppTheme.primaryLight.withOpacity(0.05),
-              //     borderRadius: BorderRadius.circular(8),
-              //     border: Border.all(
-              //         color: AppTheme.primaryLight.withOpacity(0.2)),
-              //   ),
-              //   child: Row(
-              //     children: [
-              //       Icon(Icons.info_outline,
-              //           size: 14, color: AppTheme.primaryLight),
-              //       const SizedBox(width: 8),
-              //       const Expanded(
-              //         child: Text(
-              //           'Demo credentials are pre-filled. Just click Sign In.',
-              //           style: TextStyle(
-              //               fontSize: 12, color: AppTheme.primaryLight),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              
             ],
           ),
         ),

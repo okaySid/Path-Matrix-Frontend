@@ -40,44 +40,44 @@ class _NewAnalysisModalState extends State<NewAnalysisModal> {
       if (mounted) {
         Navigator.of(context).pop();
         // Green snackbar with Spring Boot's success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.check_circle_outline,
-                    color: Colors.white, size: 16),
-                const SizedBox(width: 8),
-                Expanded(child: Text(message)),
-              ],
-            ),
-            backgroundColor: AppTheme.success,
-            behavior: SnackBarBehavior.floating,
-            width: 360,
-            duration: const Duration(seconds: 6),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(greenSnackbar(message));
+          // SnackBar(
+          //   content: Row(
+          //     children: [
+          //       const Icon(Icons.check_circle_outline,
+          //           color: Colors.white, size: 16),
+          //       const SizedBox(width: 8),
+          //       Expanded(child: Text(message)),
+          //     ],
+          //   ),
+          //   backgroundColor: AppTheme.success,
+          //   behavior: SnackBarBehavior.floating,
+          //   width: 360,
+          //   duration: const Duration(seconds: 6),
+          // ),
+        
       }
     } catch (e) {
       // Red snackbar with Spring Boot's error message
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline,
-                    color: Colors.white, size: 16),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(e.toString().replaceAll('Exception: ', '')),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.red.shade700,
-            behavior: SnackBarBehavior.floating,
-            width: 360,
-            duration: const Duration(seconds: 6),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(redSnackbar(e.toString().replaceAll('Exception: ', '')));
+          // SnackBar(
+          //   content: Row(
+          //     children: [
+          //       const Icon(Icons.error_outline,
+          //           color: Colors.white, size: 16),
+          //       const SizedBox(width: 8),
+          //       Expanded(
+          //         child: Text(e.toString().replaceAll('Exception: ', '')),
+          //       ),
+          //     ],
+          //   ),
+          //   backgroundColor: Colors.red.shade700,
+          //   behavior: SnackBarBehavior.floating,
+          //   width: 360,
+          //   duration: const Duration(seconds: 6),
+          // ),
+        // );
       }
     } finally {
       if (mounted) setState(() => _isGenerating = false);

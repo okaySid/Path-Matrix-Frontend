@@ -359,59 +359,7 @@ class _ProjectWorkspace extends StatelessWidget {
     ],
   ),
 );
-    // return Container(
-    //   color: AppTheme.surface,
-    //   child: SingleChildScrollView(
-    //     padding: const EdgeInsets.all(24),
-    //     child: Column(
-    //       crossAxisAlignment: CrossAxisAlignment.start,
-    //       children: [
-    //         // Project header row
-    //         Row(
-    //           children: [
-    //             Expanded(
-    //               child: Column(
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: [
-    //                   Text(
-    //                     project.name,
-    //                     style: const TextStyle(
-    //                       fontSize: 20,
-    //                       fontWeight: FontWeight.w700,
-    //                       color: AppTheme.textPrimary,
-    //                       letterSpacing: -0.3,
-    //                     ),
-    //                   ),
-    //                   const SizedBox(height: 4),
-    //                   Row(
-    //                     children: [
-    //                       const Icon(Icons.link,
-    //                           size: 12, color: AppTheme.textTertiary),
-    //                       const SizedBox(width: 4),
-    //                       Expanded(
-    //                         child: Text(
-    //                           project.figmaUrl,
-    //                           style: const TextStyle(
-    //                             fontSize: 12,
-    //                             color: AppTheme.textTertiary,
-    //                           ),
-    //                           overflow: TextOverflow.ellipsis,
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ],
-    //               ),
-    //             ),
-    //             StatusChip(status: project.status.name.capitalize()),
-    //           ],
-    //         ),
-    //         const SizedBox(height: 20),
-    //         AnalysisTabs(result: project.result!),
-    //       ],
-    //     ),
-    //   ),
-    // );
+   
   }
 }
 

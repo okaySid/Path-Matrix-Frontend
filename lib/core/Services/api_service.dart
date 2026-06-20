@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../../../shared/models/analysis_models.dart';
 import '../constants/env.dart';
+import 'api_exception.dart';
 
 class ApiService {
   static const String _baseUrl = Env.baseUrl;
@@ -29,41 +30,80 @@ class ApiService {
     };
   }
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Response wrapper parser
-  // Every API response is now:
-  // { "message": "...", "success": true/false, "data": ... }
-  // This helper decodes the wrapper and throws if success is false.
-  // Returns the full decoded map so callers can read message and data.
-  // ─────────────────────────────────────────────────────────────────────────────
+  
   Map<String, dynamic> _parseWrapper(http.Response response) {
-    if (response.statusCode == 401) {
-      throw Exception('Unauthorized. Please log in again.');
-    }
-
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      // Non-success HTTP status — try to parse body for message
-      try {
-        final map = jsonDecode(response.body) as Map<String, dynamic>;
-        throw Exception(map['message'] ?? 'Request failed. Status: ${response.statusCode}');
-      } catch (_) {
-        throw Exception(response.body.isNotEmpty
-            ? response.body
-            : 'Request failed. Status: ${response.statusCode}');
-      }
-    }
-
-    // HTTP 200/201 — parse the wrapper
-    final Map<String, dynamic> map = jsonDecode(response.body);
-    final success = map['success'] as bool? ?? false;
-
-    if (!success) {
-      // success: false — throw the message so UI can show red snackbar
-      throw Exception(map['message'] ?? 'Operation failed');
-    }
-
-    return map; // success: true — caller reads map['data'] and map['message']
+  if (response.statusCode == 401) {
+    throw ApiException(
+      message: 'Unauthorized. Please log in again.',
+      statusCode: 401,
+    );
   }
+
+  if (response.statusCode != 200 && response.statusCode != 201) {
+    // Try to read message from response body
+    try {
+      final map = jsonDecode(response.body) as Map<String, dynamic>;
+      throw ApiException(
+        message: map['message'] ?? 'Request failed.',
+        statusCode: response.statusCode,
+        body: map,
+      );
+    } catch (e) {
+      if (e is ApiException) rethrow; // don't wrap ApiException again
+      throw ApiException(
+        message: response.body.isNotEmpty
+            ? response.body
+            : 'Request failed. Status: ${response.statusCode}',
+        statusCode: response.statusCode,
+      );
+    }
+  }
+
+  final Map<String, dynamic> map = jsonDecode(response.body);
+  final success = map['success'] as bool? ?? false;
+
+  if (!success) {
+    throw ApiException(
+      message: map['message'] ?? 'Operation failed',
+      statusCode: response.statusCode,
+      body: map,
+    );
+  }
+
+  return map;
+}
+  // Map<String, dynamic> _parseWrapper(http.Response response) {
+  //   if (response.statusCode == 401) {
+  //     throw Exception('Unauthorized. Please log in again.');
+  //   }
+
+  //   if (response.statusCode != 200 && response.statusCode != 201) {
+  //     // Non-success HTTP status — try to parse body for message
+  //     try {
+  //       final map = jsonDecode(response.body) as Map<String, dynamic>;
+  //       throw Exception(map['message'] ?? 'Request failed. Status: ${response.statusCode}');
+  //     } catch (_) {
+  //       throw Exception(response.body.isNotEmpty
+  //           ? response.body
+  //           : 'Request failed. Status: ${response.statusCode}');
+  //     }
+  //   }
+
+  //   // HTTP 200/201 — parse the wrapper
+  //   final Map<String, dynamic> map = jsonDecode(response.body);
+  //   final success = map['success'] as bool? ?? false;
+
+  //   if (!success) {
+  //     // success: false — throw the message so UI can show red snackbar
+  //     throw ApiException(
+  //       message: map['message'],
+  //       statusCode: response.statusCode ?? 400,
+  //       // body: response.data,
+  //     );
+  //   }
+
+  //   return map; // success: true — caller reads map['data'] and map['message']
+  // }
 
   // ─────────────────────────────────────────────────────────────────────────────
   // Login
@@ -111,8 +151,7 @@ class ApiService {
     return map['message'] as String? ?? 'Password updated successfully';
   }
 
-  // Fetches raw path data as a JSON string for export
-// Returns the exact response body from Spring Boot without parsing
+
 Future<String> fetchRawPaths(String figmaUrl, int version) async {
     final url = Uri.parse('$_baseUrl/api/paths').replace(
       queryParameters: {

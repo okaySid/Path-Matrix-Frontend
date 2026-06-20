@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/models/app_state.dart';
 import '../../../shared/widgets/shared_widgets.dart';
+import '../../../core/Services/api_exception.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Entry point — shows the settings menu dialog
@@ -259,14 +260,18 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
       );
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(_greenSnackbar(message));
+        ScaffoldMessenger.of(context).showSnackBar(greenSnackbar(message));
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            _redSnackbar(e.toString().replaceAll('Exception: ', '')));
-      }
-    } finally {
+        if (mounted) {
+          final msg = e is ApiException
+              ? e.message
+              : e.toString().replaceAll('Exception: ', '');
+          ScaffoldMessenger.of(context)
+              .showSnackBar(redSnackbar(msg));
+        }
+      } 
+    finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
@@ -305,9 +310,11 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                     size: 18, color: AppTheme.textTertiary),
                 suffix: _eyeIcon(_obscureCurrent,
                     () => setState(() => _obscureCurrent = !_obscureCurrent)),
-                validator: (v) => (v == null || v.isEmpty)
-                    ? 'Current password is required'
-                    : null,
+                  validator: (v) {
+                  if (v == null || v.isEmpty) return 'Current password is required';
+                  if (v.length < 4) return 'Current Password too short';
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
 
@@ -323,7 +330,7 @@ class _ChangePasswordDialogState extends State<_ChangePasswordDialog> {
                     () => setState(() => _obscureNew = !_obscureNew)),
                 validator: (v) {
                   if (v == null || v.isEmpty) return 'New password is required';
-                  // if (v.length < 4) return 'Password too short';
+                  if (v.length < 4) return 'New Password too short';
                   return null;
                 },
               ),
@@ -413,14 +420,18 @@ class _AddAdminDialogState extends State<_AddAdminDialog> {
       );
       if (mounted) {
         Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(_greenSnackbar(message));
+        ScaffoldMessenger.of(context).showSnackBar(greenSnackbar(message));
       }
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            _redSnackbar(e.toString().replaceAll('Exception: ', '')));
+        if (mounted) {
+          final msg = e is ApiException
+              ? e.message
+              : e.toString().replaceAll('Exception: ', '');
+          ScaffoldMessenger.of(context)
+              .showSnackBar(redSnackbar(msg));
+        }
       }
-    } finally {
+    finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
@@ -485,9 +496,11 @@ class _AddAdminDialogState extends State<_AddAdminDialog> {
                 autofillHints: const [],
                 prefix: const Icon(Icons.person_outline,
                     size: 18, color: AppTheme.textTertiary),
-                validator: (v) => (v == null || v.trim().isEmpty)
-                    ? 'Username is required'
-                    : null,
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) return 'Username is required';
+                  if (v.trim().length < 4) return 'Username Must be at least 4 characters';
+                  return null;
+                },
               ),
               const SizedBox(height: 16),
 
@@ -511,9 +524,8 @@ class _AddAdminDialogState extends State<_AddAdminDialog> {
                       () => _obscurePassword = !_obscurePassword),
                 ),
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty)
-                    return 'Password is required';
-                  if (v.trim().length < 4) return 'Password too short';
+                  if (v == null || v.trim().isEmpty) return 'Password is required';
+                  if (v.trim().length < 4) return 'Password Must be at least 4 characters';
                   return null;
                 },
               ),
@@ -669,31 +681,31 @@ class _DialogActions extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 // Snackbar helpers
 // ─────────────────────────────────────────────────────────────────────────────
-SnackBar _greenSnackbar(String message) => SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.check_circle_outline,
-              color: Colors.white, size: 16),
-          const SizedBox(width: 8),
-          Expanded(child: Text(message)),
-        ],
-      ),
-      backgroundColor: AppTheme.success,
-      behavior: SnackBarBehavior.floating,
-      width: 360,
-      duration: const Duration(seconds: 4),
-    );
+// SnackBar _greenSnackbar(String message) => SnackBar(
+//       content: Row(
+//         children: [
+//           const Icon(Icons.check_circle_outline,
+//               color: Colors.white, size: 16),
+//           const SizedBox(width: 8),
+//           Expanded(child: Text(message)),
+//         ],
+//       ),
+//       backgroundColor: AppTheme.success,
+//       behavior: SnackBarBehavior.floating,
+//       width: 360,
+//       duration: const Duration(seconds: 4),
+//     );
 
-SnackBar _redSnackbar(String message) => SnackBar(
-      content: Row(
-        children: [
-          const Icon(Icons.error_outline, color: Colors.white, size: 16),
-          const SizedBox(width: 8),
-          Expanded(child: Text(message)),
-        ],
-      ),
-      backgroundColor: AppTheme.error,
-      behavior: SnackBarBehavior.floating,
-      width: 360,
-      duration: const Duration(seconds: 6),
-    );
+// SnackBar _redSnackbar(String message) => SnackBar(
+//       content: Row(
+//         children: [
+//           const Icon(Icons.error_outline, color: Colors.white, size: 16),
+//           const SizedBox(width: 8),
+//           Expanded(child: Text(message)),
+//         ],
+//       ),
+//       backgroundColor: AppTheme.error,
+//       behavior: SnackBarBehavior.floating,
+//       width: 360,
+//       duration: const Duration(seconds: 6),
+//     );

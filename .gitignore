@@ -24,7 +24,6 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
 
 # Symbolication related
 app.*.symbols
@@ -38,7 +37,6 @@ app.*.map.json
 /android/app/release
 
 # Web related
-lib/generated_plugin_registrant.dart
 
 # Generated files
 *.g.dart

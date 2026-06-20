@@ -399,3 +399,32 @@ class LoadingOverlay extends StatelessWidget {
     );
   }
 }
+
+SnackBar greenSnackbar(String message) => SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.check_circle_outline,
+              color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(child: Text(message)),
+        ],
+      ),
+      backgroundColor: const Color(0xFF059669),
+      behavior: SnackBarBehavior.floating,
+      width: 360,
+      duration: const Duration(seconds: 4),
+    );
+
+SnackBar redSnackbar(String message) => SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.error_outline, color: Colors.white, size: 16),
+          const SizedBox(width: 8),
+          Expanded(child: Text(message)),
+        ],
+      ),
+      backgroundColor: const Color(0xFFDC2626),
+      behavior: SnackBarBehavior.floating,
+      width: 360,
+      duration: const Duration(seconds: 6),
+    );
